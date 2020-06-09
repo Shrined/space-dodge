@@ -10,7 +10,6 @@ import edu.metrostate.stackoverflow.menus.MainMenu;
 
 public class SpaceDodge extends Game {
 	public SpriteBatch batch;
-	Texture img;
 	
 	@Override
 	public void create () {
