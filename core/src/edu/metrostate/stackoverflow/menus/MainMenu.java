@@ -3,12 +3,11 @@ package edu.metrostate.stackoverflow.menus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import edu.metrostate.stackoverflow.game.SpaceDodge;
+import edu.metrostate.stackoverflow.screens.MainGameScreen;
 
 public class MainMenu implements Screen {
 
@@ -46,9 +45,6 @@ public class MainMenu implements Screen {
         startHover = new TextureRegion(new Texture("main_menu/StartClicked.png"), 87, 38);
         settingsHover = new TextureRegion(new Texture("main_menu/SettingsClicked.png"), 133, 38);
         quitHover = new TextureRegion(new Texture("main_menu/QuitClicked.png"), 79, 38);
-
-
-
     }
 
     @Override
@@ -69,8 +65,6 @@ public class MainMenu implements Screen {
         game.batch.draw(backGround, 0, 0);
         game.batch.draw(floatingRobot, 605, 635);
         game.batch.draw(foreground, 440, 320);
-
-
         game.batch.draw(start, 575, 400);
         game.batch.draw(settings, 560, 325);
         game.batch.draw(quit, 580, 250);
@@ -80,6 +74,10 @@ public class MainMenu implements Screen {
         if((Gdx.input.getX() < 575 + START_BUTTON_WIDTH && Gdx.input.getX() > 575) &&
                 ((720 - Gdx.input.getY()) < 400 + BUTTON_HEIGHT && (720 - Gdx.input.getY() > 400))) {
             game.batch.draw(startHover, 575, 400);
+            if(Gdx.input.isTouched()) {
+                this.dispose();
+                game.setScreen(new MainGameScreen(game));
+            }
         }
         else if((Gdx.input.getX() < 560 + SETTINGS_BUTTON_WIDTH && Gdx.input.getX() > 560) &&
                 ((720 - Gdx.input.getY()) < 325 + BUTTON_HEIGHT && (720 - Gdx.input.getY()) > 325)) {
@@ -88,6 +86,9 @@ public class MainMenu implements Screen {
         else if((Gdx.input.getX() < 580 + QUIT_BUTTON_WIDTH && Gdx.input.getX() > 580) &&
                 ((720 - Gdx.input.getY()) < 250 + BUTTON_HEIGHT && (720 - Gdx.input.getY()) > 250)) {
             game.batch.draw(quitHover, 580, 250);
+            if(Gdx.input.isTouched()) {
+                Gdx.app.exit();
+            }
         }
         game.batch.end();
     }
