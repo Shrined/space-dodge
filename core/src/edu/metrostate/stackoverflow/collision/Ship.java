@@ -7,12 +7,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Ship extends CollidingObject {
 
-    private final String bullet1 = "bullets/Bullet1.png";
-    private final String bullet2 = "bullets/Bullet2.png";
-    private final String bullet3 = "bullets/Bullet3.png";
-    private final String bullet4 = "bullets/Bullet4.png";
+    private static final String bullet1 = "bullets/Bullet1.png";
+    private static final String bullet2 = "bullets/Bullet2.png";
+    private static final String bullet3 = "bullets/Bullet3.png";
+    private static final String bullet4 = "bullets/Bullet4.png";
 
-    long tFiredBullet = 0;
+    private long tFiredBullet = 0;
 
     private final ConcurrentLinkedQueue<CollidingObject> flyingBullets = new ConcurrentLinkedQueue<>();
 
