@@ -6,7 +6,6 @@ import edu.metrostate.stackoverflow.game.SpaceDodge;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.foregroundFPS = 60;
 		config.height = 720;
@@ -15,10 +14,5 @@ public class DesktopLauncher {
 		config.resizable = false;
 
 		new LwjglApplication(new SpaceDodge(), config);
-
-
-
-
-
 	}
 }
