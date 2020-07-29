@@ -20,7 +20,7 @@ public class HighScoresScreen implements Screen {
     private final BitmapFont scoreFont;
     private TextureRegion background;
     private TextBox textBox;
-    private List<Player> players;
+    private Player[] players;
     private int score;
     private boolean posted;
 
@@ -51,7 +51,9 @@ public class HighScoresScreen implements Screen {
         if(!posted) {
             if(textBox.getStatus()) {
                 try {
-                    client.doPostRequest(HttpClient.HIGH_SCORES_URL, client.addScoreJson(textBox.getInput(), String.valueOf(score)));
+                    if(textBox.getInput() != null) {
+                        client.doPostRequest(HttpClient.HIGH_SCORES_URL, client.addScoreJson(textBox.getInput(), String.valueOf(score)));
+                    }
                     players = client.getTopScores(HttpClient.HIGH_SCORES_URL);
                     posted = true;
                 } catch (IOException e) {
@@ -88,10 +90,10 @@ public class HighScoresScreen implements Screen {
 
     }
 
-    private void renderScores(List<Player> players) {
+    private void renderScores(Player[] players) {
         if(players != null) {
-            for(int i = 0; i < players.size(); i++) {
-                Player player = players.get(i);
+            for(int i = 0; i < players.length; i++) {
+                Player player = players[i];
                 scoreFont.draw(game.batch, player.getNameInGlyphs(), 400, 700 - (i * 30));
                 scoreFont.draw(game.batch, player.getScoreInGlyphs(), 800, 700 - (i * 30));
             }
