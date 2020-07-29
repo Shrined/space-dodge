@@ -21,21 +21,21 @@ public class MainGameScreen implements Screen {
     private static final int BULLET_SPEED = 10;
     private static int COLLISION_OBJECT_SPEED = 0;
 
-    private SpaceDodge game;
+    private final SpaceDodge game;
     private TextureRegion background;
     private Ship ship;
     private int shipY;
     private int shipX;
     private long tStart;
-    int score;
-    private ConcurrentLinkedQueue<CollidingObject> collidingObjects;
-    private static Random random = new Random();
-    BitmapFont scoreFont;
-    GlyphLayout scoreLayout;
+    private int score;
+    private final ConcurrentLinkedQueue<CollidingObject> asteroids;
+    private static final Random random = new Random();
+    private final BitmapFont scoreFont;
+    private final GlyphLayout scoreLayout;
 
     public MainGameScreen(SpaceDodge game) {
         this.game = game;
-        collidingObjects = new ConcurrentLinkedQueue<>();
+        asteroids = new ConcurrentLinkedQueue<>();
         scoreFont = new BitmapFont(Gdx.files.internal("fonts/score.fnt"));
         scoreLayout = new GlyphLayout(scoreFont, "" + score);
         score = 0;
@@ -54,18 +54,18 @@ public class MainGameScreen implements Screen {
         game.batch.begin();
         game.batch.draw(background, 0, 0);
         ship.render(game.batch);
-        for(CollidingObject collidingObject : collidingObjects) {
+        for(CollidingObject collidingObject : asteroids) {
             collidingObject.render(game.batch);
         }
         scoreFont.draw(game.batch, scoreLayout, 1100, 700);
         game.batch.end();
-        if(checkShipCollision(ship, collidingObjects)) {
+        if(checkShipCollision(ship, asteroids)) {
             gameOver();
         }
         checkBulletCollision();
         despawnCollision();
         updateCollisionCords();
-        if(collidingObjects.size() < 10) {
+        if(asteroids.size() < 10) {
             spawnCollision();
         }
         updateScore();
@@ -135,26 +135,26 @@ public class MainGameScreen implements Screen {
         while(true) {
             yCord = (random.nextInt(660));
             xCord = 1280 + random.nextInt(1280);
-            boolean isUnique = true;
-            for(CollidingObject colObj: collidingObjects) {
+            boolean isSpacedOut = true;
+            for(CollidingObject colObj: asteroids) {
                 if(colObj.getY() - yCord < 100 && colObj.getY() - yCord > -100) {
                     if(colObj.getX() - xCord < 150 && colObj.getX() - xCord > -150) {
-                        isUnique = false;
+                        isSpacedOut = false;
                         break;
                     }
                 }
             }
-            if(isUnique) {
-                collidingObjects.add(new CollidingObject(getAsteroidTexture(random.nextInt(3)), xCord, yCord));
+            if(isSpacedOut) {
+                asteroids.add(new CollidingObject(getAsteroidTexture(random.nextInt(3)), xCord, yCord));
                 break;
             }
         }
     }
 
     private void despawnCollision() {
-        for(CollidingObject asteroid : collidingObjects) {
+        for(CollidingObject asteroid : asteroids) {
             if(asteroid.getX() <= 0) {
-                collidingObjects.remove(asteroid);
+                asteroids.remove(asteroid);
             }
         }
         for(CollidingObject bullet : ship.getBullets()) {
@@ -165,7 +165,7 @@ public class MainGameScreen implements Screen {
     }
 
     private void updateCollisionCords() {
-        for(CollidingObject asteroid : collidingObjects) {
+        for(CollidingObject asteroid : asteroids) {
             asteroid.updatePos(asteroid.getX() - COLLISION_OBJECT_SPEED, asteroid.getY());
         }
         for(CollidingObject bullet : ship.getBullets()) {
@@ -179,7 +179,7 @@ public class MainGameScreen implements Screen {
     }
 
     private void gameOver() {
-        Gdx.app.exit();
+        game.setScreen(new HighScoresScreen(game, score));
     }
 
     private boolean checkShipCollision(Collision ship, ConcurrentLinkedQueue<CollidingObject> collidingObjects) {
@@ -194,9 +194,9 @@ public class MainGameScreen implements Screen {
     private void checkBulletCollision() {
         if(!ship.getBullets().isEmpty()) {
             for(CollidingObject bullet: ship.getBullets()) {
-                for(CollidingObject asteroid: collidingObjects) {
+                for(CollidingObject asteroid: asteroids) {
                     if(bullet.collidesWith(asteroid)) {
-                        collidingObjects.remove(asteroid);// TODO: make an explosion effect instead of just removing
+                        asteroids.remove(asteroid);// TODO: make an explosion effect instead of just removing
                         ship.getBullets().remove(bullet);
                         break;
                     }
