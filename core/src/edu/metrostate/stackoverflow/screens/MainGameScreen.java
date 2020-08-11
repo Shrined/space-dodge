@@ -33,18 +33,18 @@ public class MainGameScreen implements Screen {
     private final BitmapFont scoreFont;
     private final GlyphLayout scoreLayout;
 
-    public MainGameScreen(SpaceDodge game) {
+    public MainGameScreen(SpaceDodge game, Ship ship) {
         this.game = game;
         asteroids = new ConcurrentLinkedQueue<>();
         scoreFont = new BitmapFont(Gdx.files.internal("fonts/score.fnt"));
         scoreLayout = new GlyphLayout(scoreFont, "" + score);
+        this.ship = ship;
         score = 0;
     }
 
     @Override
     public void show() {
         background = new TextureRegion(new Texture("main_game_screen/Background.png"), 1280, 720);
-        ship = new Ship(new Texture("ships/spaceship.png"));
         tStart = System.currentTimeMillis();
     }
 
@@ -58,10 +58,10 @@ public class MainGameScreen implements Screen {
             collidingObject.render(game.batch);
         }
         scoreFont.draw(game.batch, scoreLayout, 1100, 700);
-        game.batch.end();
         if(checkShipCollision(ship, asteroids)) {
             gameOver();
         }
+        game.batch.end();
         checkBulletCollision();
         despawnCollision();
         updateCollisionCords();
@@ -179,7 +179,8 @@ public class MainGameScreen implements Screen {
     }
 
     private void gameOver() {
-        game.setScreen(new HighScoresScreen(game, score));
+        this.dispose();
+        game.setScreen(new HighScoresScreen(game, score, ship));
     }
 
     private boolean checkShipCollision(Collision ship, ConcurrentLinkedQueue<CollidingObject> collidingObjects) {

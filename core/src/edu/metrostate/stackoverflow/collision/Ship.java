@@ -8,13 +8,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Ship extends CollidingObject {
 
     private static final String bullet1 = "bullets/Bullet1.png";
-    private static final String bullet2 = "bullets/Bullet2.png";
-    private static final String bullet3 = "bullets/Bullet3.png";
-    private static final String bullet4 = "bullets/Bullet4.png";
 
     private long tFiredBullet = 0;
 
     private final ConcurrentLinkedQueue<CollidingObject> flyingBullets = new ConcurrentLinkedQueue<>();
+    private static final String defaultShipSprite = "ships/SpaceShip.png";
+
+    public Ship() {
+        super(new Texture(defaultShipSprite), 0, 0);
+    }
 
     public Ship(Texture texture) {
         super(texture, 0, 0);
